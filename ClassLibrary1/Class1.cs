@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
-using NAudio.Wave;
+using NAudio;
 using LameDLLWrap;
 using System.Collections.Generic;
 

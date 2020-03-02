@@ -8,6 +8,9 @@ namespace Encode
 {
     public class LSB
     {
+        // source stream- поток из исходого файла 
+        // detination stream - куда записываеи
+        // bytespersample - 
         public void Hide(Stream messageStream, Stream keyStream)
         {
 
@@ -33,9 +36,9 @@ namespace Encode
                     for (int n = 0; n < keyByte - 1; n++)
                     {
                         //copy one sample from the clean stream to the carrier stream
-                        sourceStream.Copy(
+                        sourceStream.Copy( 
                             waveBuffer, 0,
-                            waveBuffer.Length, destinationStream);
+                            waveBuffer.Length, destinationStream); 
                     }
 
                     //read one sample from the wave stream
