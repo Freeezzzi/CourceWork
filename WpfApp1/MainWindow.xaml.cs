@@ -12,7 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using Encode;
+using System.IO;
+using NAudio.Wave;
 namespace WpfApp1
 {
     /// <summary>
@@ -26,6 +28,25 @@ namespace WpfApp1
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            LSB lsb = new LSB();
+            using (FileStream message = new FileStream($"C:\\Users\\Alex Novoselov\\Desktop\\message.txt",FileMode.Open))
+            {
+                using (FileStream key = new FileStream($"C:\\Users\\Alex Novoselov\\Desktop\\key.txt", FileMode.Open))
+                {
+                    using (FileStream source = new FileStream($"C:\\Users\\Alex Novoselov\\Desktop\\1.wav", FileMode.Open))
+                    {
+                        using (FileStream destination = new FileStream($"C:\\Users\\Alex Novoselov\\Desktop\\2.wav", FileMode.OpenOrCreate))
+                        {
+                            LSB.Hide(message, key, source, destination);
+                            output.Text = "1";
+                        }
+                    }
+                }
+            }
+        }
+
+        private void output_Loaded(object sender, RoutedEventArgs e)
         {
 
         }

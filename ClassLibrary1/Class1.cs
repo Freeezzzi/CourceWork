@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using NAudio;
@@ -643,3 +643,4 @@ namespace NAudio.Lame
     }
 #pragma warning restore IDE1006 // Naming Styles
 }
+*/
