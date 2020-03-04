@@ -4,7 +4,7 @@ using System.Windows;
 using System.IO;
 using System.IO.Compression;
 using NAudio.Wave;
-
+using System.Collections.Generic;
 
 namespace Encode
 {
@@ -48,9 +48,7 @@ namespace Encode
         static public void Hide(Stream messageStream, Stream keyStream, Stream sourceStream, Stream destinationStream1)
         {
             WaveFormat format = (new WaveFileReader(sourceStream)).WaveFormat;
-
             WaveFileWriter destinationStream = new WaveFileWriter(destinationStream1, format);
-
 
             var waveBuffer = new byte[format.BitsPerSample / 8];
             byte message, bit, waveByte;
@@ -73,20 +71,19 @@ namespace Encode
 
 
                     //skip a couple of samples
-                    /*
+                    
                     for (int n = 0; n < keyByte - 1; n++)
                     {
                         //copy one sample from the clean stream to the carrier stream
-
                         sourceStream.CopyTo(
-                            destinationStream, waveBuffer.Length);
+                         destinationStream, waveBuffer.Length);
                     }
-                    */
+
 
 
 
                     //read one sample from the wave stream
-                    sourceStream.Read(waveBuffer, 0, waveBuffer.Length - (waveBuffer.Length % format.BlockAlign));
+                    sourceStream.Read(waveBuffer, 0, waveBuffer.Length);
 
                     waveByte = waveBuffer[format.BitsPerSample / 8 - 1];
 
@@ -106,7 +103,7 @@ namespace Encode
                     waveBuffer[format.BitsPerSample / 8 - 1] = waveByte;
 
                     //write the result to destinationStream
-                    destinationStream.Write(waveBuffer, 0, format.BitsPerSample / 8);
+                    destinationStream.Write(waveBuffer, 0, waveBuffer.Length);
                 }
                 destinationStream.Flush();
             }
@@ -131,14 +128,19 @@ namespace Encode
         // bytespersample - 
       
 
-        public void Extract(Stream messageStream, Stream keyStream)
+        public List<byte> Extract(Stream messageStream, Stream keyStream, Stream sourceStream)
         {
-            byte[] waveBuffer = new byte[1337 / 8];
+            WaveFormat format = (new WaveFileReader(sourceStream)).WaveFormat;
+
+            byte[] waveBuffer = new byte[format.BitsPerSample/8];
             byte message, bit, waveByte;
-            int messageLength = 55; //expected length of the message
+            int messageLength=12; //expected length of the message
             int keyByte; //distance of the next carrier sample
 
-            while ((messageLength == 0 || messageStream.Length < messageLength))
+            List<byte> bt = new List<byte>();
+
+            //while ((messageLength == 0 || messageStream.Length < messageLength))
+            while ((messageStream.Length < messageLength))
             {
                 //clear the message-byte
                 message = 0;
@@ -149,15 +151,15 @@ namespace Encode
 
                     //read a byte from the key
                     keyByte = keyStream.ReadByte();
-                    /*
+                    
                     //skip a couple of samples
                     for (int n = 0; n < keyByte; n++)
                     {
                         //read one sample from the wave stream
                         sourceStream.Read(waveBuffer, 0, waveBuffer.Length);
                     }
-                    */
-                    waveByte = waveBuffer[1337 / 8 - 1];
+                    
+                    waveByte = waveBuffer[format.BitsPerSample / 8 - 1];
 
 
 
@@ -170,6 +172,8 @@ namespace Encode
                 //add the re-constructed byte to the message
                 messageStream.WriteByte(message);
 
+                bt.Add(message);
+
                 if (messageLength == 0 && messageStream.Length == 4)
                 {
                     //first 4 bytes contain the message's length
@@ -177,6 +181,7 @@ namespace Encode
                 }
             }
             messageStream.Flush();
+            return bt;
         }
     }
 }

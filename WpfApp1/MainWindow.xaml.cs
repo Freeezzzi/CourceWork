@@ -30,15 +30,21 @@ namespace WpfApp1
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             LSB lsb = new LSB();
-            using (FileStream message = new FileStream($"C:\\Users\\Alex Novoselov\\Desktop\\message.txt",FileMode.Open))
+            using (FileStream message = new FileStream($"message.txt",FileMode.Open))
             {
-                using (FileStream key = new FileStream($"C:\\Users\\Alex Novoselov\\Desktop\\key.txt", FileMode.Open))
+                using (FileStream key = new FileStream($"key.txt", FileMode.Open))
                 {
-                    using (FileStream source = new FileStream($"C:\\Users\\Alex Novoselov\\Desktop\\1.wav", FileMode.Open))
+                    using (FileStream source = new FileStream($"1.wav", FileMode.Open))
                     {
-                        using (FileStream destination = new FileStream($"C:\\Users\\Alex Novoselov\\Desktop\\2.wav", FileMode.OpenOrCreate))
+                        using (FileStream destination = new FileStream($"2.wav", FileMode.Create))
                         {
                             LSB.Hide(message, key, source, destination);
+                            
+                        }
+                        using (FileStream destination = new FileStream($"2.wav", FileMode.Open))
+                        {
+                            using (FileStream message1 = new FileStream($"message1.txt",FileMode.Create))
+                                lsb.Extract(message1, key, destination).ForEach((t) => MessageBox.Show(t.ToString()));
                             output.Text = "1";
                         }
                     }
