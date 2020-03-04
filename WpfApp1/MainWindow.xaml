@@ -12,7 +12,8 @@
             <ColumnDefinition Width="755*"/>
         </Grid.ColumnDefinitions>
         <Button Content="Button" HorizontalAlignment="Left" Margin="529,355,0,0" VerticalAlignment="Top" Width="185" Height="54" Click="Button_Click" Grid.Column="1"/>
-        <TextBox x:Name="output" HorizontalAlignment="Right" Height="22" Margin="0,355,371,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="198" RenderTransformOrigin="0.5,9.373" Grid.Column="1" Loaded="output_Loaded"/>
+        <TextBox x:Name="output" HorizontalAlignment="Right" Height="369" Margin="0,20,467,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="224" RenderTransformOrigin="0.5,9.373" Grid.Column="1" Loaded="output_Loaded"/>
+        <TextBox x:Name="output1" Grid.Column="1" HorizontalAlignment="Left" Height="369" Margin="293,20,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="224"/>
 
     </Grid>
 </Window>
