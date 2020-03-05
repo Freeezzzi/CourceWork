@@ -38,14 +38,14 @@ namespace WpfApp1
                     {
                         using (FileStream destination = new FileStream($"2.wav", FileMode.Create))
                         {
-                            output.Text = LSB.Hide(message, key, source, destination);
+                            LSB.Hide(message, key, source, destination);
                             key.Seek(0, SeekOrigin.Begin);
                             
                         }
                         using (FileStream destination = new FileStream($"2.wav", FileMode.Open))
                         {
                             using (FileStream message1 = new FileStream($"message1.txt", FileMode.Create))
-                                output1.Text = lsb.Extract(message1, key, destination);
+                                LSB.Extract(message1, key, destination);
                         }
                     }
                 }

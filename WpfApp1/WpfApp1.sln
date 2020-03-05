@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp1", "WpfApp1.csproj",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary1", "..\ClassLibrary1\ClassLibrary1.csproj", "{1909655B-2845-474F-9599-AA7DCB3AA734}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "yeti.mp3", "..\yeti.mp3\yeti.mp3.csproj", "{B564FD33-FA50-46B2-B669-2D83DE3AF5E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1909655B-2845-474F-9599-AA7DCB3AA734}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1909655B-2845-474F-9599-AA7DCB3AA734}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1909655B-2845-474F-9599-AA7DCB3AA734}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B564FD33-FA50-46B2-B669-2D83DE3AF5E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B564FD33-FA50-46B2-B669-2D83DE3AF5E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B564FD33-FA50-46B2-B669-2D83DE3AF5E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B564FD33-FA50-46B2-B669-2D83DE3AF5E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

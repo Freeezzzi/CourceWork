@@ -6,29 +6,14 @@ using System.IO.Compression;
 using NAudio.Wave;
 using System.Collections.Generic;
 using System.Text;
+using NAudio.Lame;
+
+
 namespace Encode
 {
     public class LSB
     {
-        /*
-        static readonly string path = $"C:\\Users\\Alex Novoselov\\Desktop\\1.wav";
-        //WaveFormat format;
-        static WaveFileReader sourceStream = new WaveFileReader(path);
-        public static WaveFormat format = sourceStream.WaveFormat;
-        static WaveFileWriter destinationStream = new WaveFileWriter($"C:\\Users\\Alex Novoselov\\Desktop\\2.wav", format);
-        */
-
-
-
-
-
-
-
-
-
-
-
-
+        
 
         static void WriteWavHeader(Stream stream, bool isFloatingPoint, ushort channelCount, ushort bitDepth, int sampleRate, int totalSampleCount)
         {
@@ -81,27 +66,57 @@ namespace Encode
             stream.Write(BitConverter.GetBytes((bitDepth / 8) * totalSampleCount), 0, 4);
         }
 
+        public static void ConvertWavToMp3(Stream wavFile)
+        {
+
+            using (var retMs = new FileStream("1.mp3",FileMode.Create))
+            using (var rdr = new WaveFileReader(wavFile))
+            using (var wtr = new LameMP3FileWriter(retMs, rdr.WaveFormat, 128))
+            {
+                rdr.CopyTo(wtr);
+                wtr.Flush();
+                retMs.Flush();
+            }
 
 
+        }
+
+        public static void WavToMP3(Stream wavFile)
+        {
+            using (Stream source = wavFile)
+            using (NAudio.Wave.WaveFileReader rdr = new NAudio.Wave.WaveFileReader(source))
+            {
+                WaveLib.WaveFormat fmt = new WaveLib.WaveFormat(rdr.WaveFormat.SampleRate, rdr.WaveFormat.BitsPerSample, rdr.WaveFormat.Channels);
+
+                // convert to MP3 at 96kbit/sec...
+                Yeti.Lame.BE_CONFIG conf = new Yeti.Lame.BE_CONFIG(fmt, 96);
+
+                // Allocate a 1-second buffer
+                int blen = rdr.WaveFormat.AverageBytesPerSecond;
+                byte[] buffer = new byte[blen];
+
+                // Do conversion
+                using (FileStream output = new FileStream("1.mp3",FileMode.Create))
+                {
+                    Yeti.MMedia.Mp3.Mp3Writer mp3 = new Yeti.MMedia.Mp3.Mp3Writer(output, fmt, conf);
+
+                    int readCount;
+                    while ((readCount = rdr.Read(buffer, 0, blen)) > 0)
+                        mp3.Write(buffer, 0, readCount);
+
+                    mp3.Close();
+                    output.Flush();
+                }
+            }
+        }
 
 
-
-
-
-
-
-
-
-
-
-
-        static public string Hide(Stream messageStream, Stream keyStream, Stream sourceStream, Stream destinationStream)
+        static public void Hide(Stream messageStream, Stream keyStream, Stream sourceStream, Stream destinationStream)
         {
             var reader = new WaveFileReader(sourceStream);
             WaveFormat format = reader.WaveFormat;
 
             WriteWavHeader(destinationStream, false, (ushort)format.Channels, (ushort)format.BitsPerSample, format.SampleRate, (int)(reader.SampleCount));
-            string str = "";
 
             var waveBuffer = new byte[format.BitsPerSample/8];
             byte message, bit, waveByte;
@@ -126,22 +141,18 @@ namespace Encode
 
                     for (int n = 0; n < keyByte - 1; n++)
                     {
-                        //str += sourceStream.Position+ Environment.NewLine;
-                        //copy one sample from the clean stream to the carrier stream
                         sourceStream.Read(waveBuffer, 0, waveBuffer.Length);
                         destinationStream.Write(waveBuffer, 0, waveBuffer.Length);
                     }
 
 
 
-
                     //read one sample from the wave stream
                     sourceStream.Read(waveBuffer, 0, waveBuffer.Length);
 
+
                     waveByte = waveBuffer[format.BitsPerSample/8 - 1];
 
-                    //Array.ForEach(waveBuffer, (t) => str += t);
-                    //str += Environment.NewLine;
 
                     //get the next bit from the current message byte...
                     bit = (byte)(((message & (byte)(1 << bitIndex)) > 0) ? 1 : 0);
@@ -157,8 +168,6 @@ namespace Encode
                     }
                     waveBuffer[format.BitsPerSample/8 - 1] = waveByte;
 
-                    Array.ForEach(waveBuffer, (t) => str += t);
-                    str += Environment.NewLine;
 
                     //write the result to destinationStream
                     destinationStream.Write(waveBuffer, 0, waveBuffer.Length);
@@ -166,21 +175,25 @@ namespace Encode
 
             }
             sourceStream.CopyTo(destinationStream);
-            destinationStream.Flush();
-            return str;
+            destinationStream.Seek(0, SeekOrigin.Begin);
+
+            WavToMP3(destinationStream);
         }
 
         // source stream- поток из исходого файла 
         // detination stream - куда записываеи
         // bytespersample - 
 
-
-        public string Extract(Stream messageStream, Stream keyStream, Stream sourceStream)
+        /// <summary>
+        /// Считывает из потока сообщение 
+        /// </summary>
+        /// <param name="messageStream"></param>
+        /// <param name="keyStream"></param>
+        /// <param name="sourceStream"></param>
+        public static void Extract(Stream messageStream, Stream keyStream, Stream sourceStream)
         {
             WaveFormat format = (new WaveFileReader(sourceStream)).WaveFormat;
 
-
-            string str = "";
             byte[] waveBuffer = new byte[format.BitsPerSample/8];
             byte message, bit, waveByte;
             int messageLength = 12; //expected length of the message
@@ -201,18 +214,16 @@ namespace Encode
                     keyByte = keyStream.ReadByte();
 
                     //skip a couple of samples
-                    for (int n = 0; n < keyByte; n++)
+                    for (int n = 0; n < keyByte-1; n++)
                     {
-                        //str += sourceStream.Position + Environment.NewLine;
                         //read one sample from the wave stream
                         sourceStream.Read(waveBuffer, 0, waveBuffer.Length);
 
                     }
+
+                    sourceStream.Read(waveBuffer, 0, waveBuffer.Length);
                     waveByte = waveBuffer[format.BitsPerSample/8 - 1];
 
-                    Array.ForEach(waveBuffer, (t) => str += t);
-                    //str += waveByte;
-                    str += Environment.NewLine;
 
                     //get the last bit of the sample...
                     bit = (byte)(((waveByte % 2) == 0) ? 0 : 1);
@@ -233,7 +244,6 @@ namespace Encode
                 }
             }
             messageStream.Flush();
-            return str;
         }
     }
 }
