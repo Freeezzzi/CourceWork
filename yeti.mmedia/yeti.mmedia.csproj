@@ -4,19 +4,19 @@
     <ProjectType>Local</ProjectType>
     <ProductVersion>7.10.3077</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B564FD33-FA50-46B2-B669-2D83DE3AF5E4}</ProjectGuid>
+    <ProjectGuid>{315EE7BF-EAE2-42C0-BFC6-CCA9160F3CFE}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ApplicationIcon />
     <AssemblyKeyContainerName />
-    <AssemblyName>yeti.mp3</AssemblyName>
+    <AssemblyName>yeti.mmedia</AssemblyName>
     <AssemblyOriginatorKeyFile />
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
     <DelaySign>false</DelaySign>
     <OutputType>Library</OutputType>
-    <RootNamespace>Yeti.MMedia.Mp3</RootNamespace>
+    <RootNamespace>Yeti.MMedia</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject />
     <FileUpgradeFlags>
@@ -66,11 +66,6 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\yeti.mmedia\yeti.mmedia.csproj">
-      <Name>yeti.mmedia</Name>
-      <Project>{315EE7BF-EAE2-42C0-BFC6-CCA9160F3CFE}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -91,21 +86,41 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="AudioWriters.cs" />
-    <Compile Include="EditMp3Writer.cs">
+    <Compile Include="AudioWriters.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EditWaveWriter.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Lame.cs">
+    <Compile Include="InFormatEdit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NumericTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WaveNative.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Mp3Writer.cs">
+    <Compile Include="WaveStream.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Mp3WriterConfig.cs">
+    <Compile Include="WaveWriter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <EmbeddedResource Include="EditMp3Writer.resx">
-      <DependentUpon>EditMp3Writer.cs</DependentUpon>
+    <Compile Include="Win32Functions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="WriterConfig.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <EmbeddedResource Include="EditWaveWriter.resx">
+      <DependentUpon>EditWaveWriter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InFormatEdit.resx">
+      <DependentUpon>InFormatEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NumericTextBox.resx">
+      <DependentUpon>NumericTextBox.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

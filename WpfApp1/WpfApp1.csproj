@@ -109,6 +109,10 @@
       <Project>{1909655b-2845-474f-9599-aa7dcb3aa734}</Project>
       <Name>ClassLibrary1</Name>
     </ProjectReference>
+    <ProjectReference Include="..\yeti.mp3\yeti.mp3.csproj">
+      <Project>{b564fd33-fa50-46b2-b669-2d83de3af5e4}</Project>
+      <Name>yeti.mp3</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\NAudio.Lame.1.1.0\build\NAudio.Lame.targets" Condition="Exists('packages\NAudio.Lame.1.1.0\build\NAudio.Lame.targets')" />

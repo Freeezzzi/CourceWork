@@ -50,18 +50,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AudioWriters.cs" />
     <Compile Include="LSB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Read.cs" />
-    <Compile Include="WaveNative.cs" />
-    <Compile Include="WaveStream.cs" />
     <Compile Include="WavHeader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\yeti.mmedia\yeti.mmedia.csproj">
+      <Project>{315ee7bf-eae2-42c0-bfc6-cca9160f3cfe}</Project>
+      <Name>yeti.mmedia</Name>
+    </ProjectReference>
     <ProjectReference Include="..\yeti.mp3\yeti.mp3.csproj">
       <Project>{b564fd33-fa50-46b2-b669-2d83de3af5e4}</Project>
       <Name>yeti.mp3</Name>

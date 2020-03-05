@@ -7,14 +7,22 @@ using NAudio.Wave;
 using System.Collections.Generic;
 using System.Text;
 using NAudio.Lame;
-
+using Yeti.Lame;
 
 namespace Encode
 {
     public class LSB
     {
         
-
+        /// <summary>
+        /// Записывает заоголовок в wav поток по данным
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="isFloatingPoint"></param>
+        /// <param name="channelCount"></param>
+        /// <param name="bitDepth"></param>
+        /// <param name="sampleRate"></param>
+        /// <param name="totalSampleCount"></param>
         static void WriteWavHeader(Stream stream, bool isFloatingPoint, ushort channelCount, ushort bitDepth, int sampleRate, int totalSampleCount)
         {
             stream.Position = 0;
@@ -66,21 +74,10 @@ namespace Encode
             stream.Write(BitConverter.GetBytes((bitDepth / 8) * totalSampleCount), 0, 4);
         }
 
-        public static void ConvertWavToMp3(Stream wavFile)
-        {
-
-            using (var retMs = new FileStream("1.mp3",FileMode.Create))
-            using (var rdr = new WaveFileReader(wavFile))
-            using (var wtr = new LameMP3FileWriter(retMs, rdr.WaveFormat, 128))
-            {
-                rdr.CopyTo(wtr);
-                wtr.Flush();
-                retMs.Flush();
-            }
-
-
-        }
-
+        /// <summary>
+        /// Преобразует поток с wav файлом в mp3 
+        /// </summary>
+        /// <param name="wavFile"></param>
         public static void WavToMP3(Stream wavFile)
         {
             using (Stream source = wavFile)
@@ -104,8 +101,8 @@ namespace Encode
                     while ((readCount = rdr.Read(buffer, 0, blen)) > 0)
                         mp3.Write(buffer, 0, readCount);
 
-                    mp3.Close();
                     output.Flush();
+                    mp3.Close();
                 }
             }
         }
@@ -177,12 +174,10 @@ namespace Encode
             sourceStream.CopyTo(destinationStream);
             destinationStream.Seek(0, SeekOrigin.Begin);
 
+            // Записываем в формате mp3 на диск
             WavToMP3(destinationStream);
         }
 
-        // source stream- поток из исходого файла 
-        // detination stream - куда записываеи
-        // bytespersample - 
 
         /// <summary>
         /// Считывает из потока сообщение 
