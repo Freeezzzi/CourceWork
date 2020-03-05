@@ -290,6 +290,7 @@ namespace Encode
                         messageStream.Seek(0, SeekOrigin.Begin);
                         messageStream.Read(bytes, 0, 4);
                         messageLength = intFromBytes(bytes);
+                        messageStream.Seek(0, SeekOrigin.Begin);
                     }
                 }
                 messageStream.Flush();
