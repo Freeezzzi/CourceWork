@@ -13,7 +13,7 @@ namespace Encode
 {
     public class LSB
     {
-        
+
         /// <summary>
         /// Записывает заоголовок в wav поток по данным
         /// </summary>
@@ -93,7 +93,7 @@ namespace Encode
                 byte[] buffer = new byte[blen];
 
                 // Do conversion
-                using (FileStream output = new FileStream("1.mp3",FileMode.Create))
+                using (FileStream output = new FileStream("1.mp3", FileMode.Create))
                 {
                     Yeti.MMedia.Mp3.Mp3Writer mp3 = new Yeti.MMedia.Mp3.Mp3Writer(output, fmt, conf);
 
@@ -107,138 +107,194 @@ namespace Encode
             }
         }
 
-
-        static public void Hide(Stream messageStream, Stream keyStream, Stream sourceStream, Stream destinationStream)
+        public static int intFromBytes(byte[] bytes)
         {
-            var reader = new WaveFileReader(sourceStream);
-            WaveFormat format = reader.WaveFormat;
+            int value = ((bytes[0] & 0xFF) << 24) + ((bytes[1] & 0xFF) << 16) + ((bytes[2] & 0xFF) << 8) + (bytes[3] & 0xFF);
+            return value;
+        }
 
-            WriteWavHeader(destinationStream, false, (ushort)format.Channels, (ushort)format.BitsPerSample, format.SampleRate, (int)(reader.SampleCount));
+        public static byte[] intToBytes(int value)
+        {
+            byte[] bytes = new byte[4];
+            bytes[3] = (byte)value;
+            bytes[2] = (byte)(value >> 8);
+            bytes[1] = (byte)(value >> 16);
+            bytes[0] = (byte)(value >> 24);
+            return bytes;
+        }
 
-            var waveBuffer = new byte[format.BitsPerSample/8];
-            byte message, bit, waveByte;
-            int messageBuffer; //receives the next byte of the message or -1
-            int keyByte; //distance of the next carrier sample
+        public static byte[] Connect(byte[] list1,byte[] list2)
+        {
+            byte[] list = new byte[list1.Length + list2.Length];
+            list1.CopyTo(list, 0);
+            list2.CopyTo(list, list1.Length);
+            return list;
+        }
 
-            while ((messageBuffer = messageStream.ReadByte()) >= 0)
+        static public string Hide(string messagePath, string keyPath, string sourcePath, string destinationPath)
+        {
+            using (var sourceStream = new FileStream(sourcePath, FileMode.Open))
+            using (var keyStream = new FileStream(keyPath, FileMode.Open))
+            using (var destinationStream = new FileStream(destinationPath, FileMode.Create))
+            using (var reader = new WaveFileReader(sourceStream))
             {
-                
-                //read one byte of the message stream
-                message = (byte)messageBuffer;
-                //for each bit in [message]
-                for (int bitIndex = 0; bitIndex < 8; bitIndex++)
+                WaveFormat format = reader.WaveFormat;
+
+                WriteWavHeader(destinationStream, false, (ushort)format.Channels, (ushort)format.BitsPerSample, format.SampleRate, (int)(reader.SampleCount));
+
+                var waveBuffer = new byte[format.BitsPerSample / 8];
+                byte message, bit, waveByte;
+                int messageBuffer; //receives the next byte of the message or -1
+                int keyByte; //distance of the next carrier sample
+
+                byte[] file = File.ReadAllBytes(messagePath);
+
+                byte[] length = intToBytes(file.Length);
+
+                //вставить длину в начало
+                string str = "";
+                using (MemoryStream messageStream = new MemoryStream(Connect(length, file)))
                 {
 
-                    //read a byte from the key
-
-                    keyByte = keyStream.ReadByte();
-
-
-                    //skip a couple of samples
-
-                    for (int n = 0; n < keyByte - 1; n++)
+                    while ((messageBuffer = messageStream.ReadByte()) >= 0)
                     {
-                        sourceStream.Read(waveBuffer, 0, waveBuffer.Length);
-                        destinationStream.Write(waveBuffer, 0, waveBuffer.Length);
+
+                        //read one byte of the message stream
+                        message = (byte)messageBuffer;
+                        //for each bit in [message]
+                        for (int bitIndex = 0; bitIndex < 8; bitIndex++)
+                        {
+
+                            //read a byte from the key
+
+                            keyByte = keyStream.ReadByte();
+
+
+                            //skip a couple of samples
+
+                            for (int n = 0; n < keyByte - 1; n++)
+                            {
+                                sourceStream.Read(waveBuffer, 0, waveBuffer.Length);
+                                destinationStream.Write(waveBuffer, 0, waveBuffer.Length);
+                            }
+
+
+
+                            //read one sample from the wave stream
+                            sourceStream.Read(waveBuffer, 0, waveBuffer.Length);
+
+                            Array.ForEach(waveBuffer, (t) => str += t+"+");
+                            str += Environment.NewLine;
+
+                            waveByte = waveBuffer[format.BitsPerSample / 8 - 1];
+
+
+                            //get the next bit from the current message byte...
+                            bit = (byte)(((message & (byte)(1 << bitIndex)) > 0) ? 1 : 0);
+
+                            //...place it in the last bit of the sample
+                            if ((bit == 1) && ((waveByte % 2) == 0))
+                            {
+                                waveByte += 1;
+                            }
+                            else if ((bit == 0) && ((waveByte % 2) == 1))
+                            {
+                                waveByte -= 1;
+                            }
+                            waveBuffer[format.BitsPerSample / 8 - 1] = waveByte;
+
+                            Array.ForEach(waveBuffer, (t) => str += t+"-");
+                            str += Environment.NewLine;
+                            //write the result to destinationStream
+                            destinationStream.Write(waveBuffer, 0, waveBuffer.Length);
+                            //str += destinationStream.Position + Environment.NewLine;
+                        }
+                        str += Environment.NewLine;
                     }
+                    sourceStream.CopyTo(destinationStream);
+                    destinationStream.Seek(0, SeekOrigin.Begin);
+                    destinationStream.Flush();
 
 
-
-                    //read one sample from the wave stream
-                    sourceStream.Read(waveBuffer, 0, waveBuffer.Length);
-
-
-                    waveByte = waveBuffer[format.BitsPerSample/8 - 1];
-
-
-                    //get the next bit from the current message byte...
-                    bit = (byte)(((message & (byte)(1 << bitIndex)) > 0) ? 1 : 0);
-
-                    //...place it in the last bit of the sample
-                    if ((bit == 1) && ((waveByte % 2) == 0))
-                    {
-                        waveByte += 1;
-                    }
-                    else if ((bit == 0) && ((waveByte % 2) == 1))
-                    {
-                        waveByte -= 1;
-                    }
-                    waveBuffer[format.BitsPerSample/8 - 1] = waveByte;
-
-
-                    //write the result to destinationStream
-                    destinationStream.Write(waveBuffer, 0, waveBuffer.Length);
+                    return str;
+                    // Записываем в формате mp3 на диск
+                    //WavToMP3(destinationStream);
                 }
-
             }
-            sourceStream.CopyTo(destinationStream);
-            destinationStream.Seek(0, SeekOrigin.Begin);
-
-            // Записываем в формате mp3 на диск
-            WavToMP3(destinationStream);
         }
 
 
-        /// <summary>
-        /// Считывает из потока сообщение 
-        /// </summary>
-        /// <param name="messageStream"></param>
-        /// <param name="keyStream"></param>
-        /// <param name="sourceStream"></param>
-        public static void Extract(Stream messageStream, Stream keyStream, Stream sourceStream)
+        public static string Extract(string encodemessagePath, string keyPath, string sourcePath)
         {
-            WaveFormat format = (new WaveFileReader(sourceStream)).WaveFormat;
-
-            byte[] waveBuffer = new byte[format.BitsPerSample/8];
-            byte message, bit, waveByte;
-            int messageLength = 12; //expected length of the message
-            int keyByte; //distance of the next carrier sample
-
-
-            //while ((messageLength == 0 || messageStream.Length < messageLength))
-            while ((messageStream.Length < messageLength))
+            using (var messageStream = new FileStream(encodemessagePath, FileMode.Create))
+            using (var sourceStream = new FileStream(sourcePath, FileMode.Open))
+            using (var keyStream = new FileStream(keyPath, FileMode.Open))
             {
-                //clear the message-byte
-                message = 0;
-
-                //for each bit in [message]
-                for (int bitIndex = 0; bitIndex < 8; bitIndex++)
+                /*
+                using (var reader = new Mp3FileReader(sourcePath))
                 {
+                    WaveFileWriter.CreateWaveFile("converter.wav", reader);
 
-                    //read a byte from the key
-                    keyByte = keyStream.ReadByte();
+                }
+                */
+                WaveFormat format = (new WaveFileReader(sourceStream)).WaveFormat;
 
-                    //skip a couple of samples
-                    for (int n = 0; n < keyByte-1; n++)
+                sourceStream.Seek(44, SeekOrigin.Begin);
+                string str = "";
+
+                byte[] waveBuffer = new byte[format.BitsPerSample / 8];
+                byte message, bit, waveByte;
+                int messageLength = 0; //expected length of the message
+                int keyByte; //distance of the next carrier sample
+
+                while ((messageLength == 0 || messageStream.Length < messageLength))
+                {
+                    //clear the message-byte
+                    message = 0;
+
+                    //for each bit in [message]
+                    for (int bitIndex = 0; bitIndex < 8; bitIndex++)
                     {
-                        //read one sample from the wave stream
+
+                        //read a byte from the key
+                        keyByte = keyStream.ReadByte();
+
+                        //skip a couple of samples
+                        for (int n = 0; n < keyByte-1 ; n++)
+                        {
+                            //read one sample from the wave stream
+                            sourceStream.Read(waveBuffer, 0, waveBuffer.Length);
+                            
+                        }
+
                         sourceStream.Read(waveBuffer, 0, waveBuffer.Length);
 
+
+                        waveByte = waveBuffer[format.BitsPerSample / 8 - 1];
+
+                        //get the last bit of the sample...
+                        bit = (byte)(((waveByte % 2) == 0) ? 0 : 1);
+
+
+                        //...write it into the message-byte
+                        message += (byte)(bit << bitIndex);
                     }
+                    //add the re-constructed byte to the message
+                    messageStream.WriteByte(message);
 
-                    sourceStream.Read(waveBuffer, 0, waveBuffer.Length);
-                    waveByte = waveBuffer[format.BitsPerSample/8 - 1];
-
-
-                    //get the last bit of the sample...
-                    bit = (byte)(((waveByte % 2) == 0) ? 0 : 1);
-
-                    //...write it into the message-byte
-                    message += (byte)(bit << bitIndex);
-
+                    if (messageLength == 0 && messageStream.Length == 4)
+                    {
+                        //first 4 bytes contain the message's length
+                        //...
+                        byte[] bytes = new byte[4];
+                        messageStream.Seek(0, SeekOrigin.Begin);
+                        messageStream.Read(bytes, 0, 4);
+                        messageLength = intFromBytes(bytes);
+                    }
                 }
-                //add the re-constructed byte to the message
-                messageStream.WriteByte(message);
-
-
-
-                if (messageLength == 0 && messageStream.Length == 4)
-                {
-                    //first 4 bytes contain the message's length
-                    //...
-                }
+                messageStream.Flush();
+                return str;
             }
-            messageStream.Flush();
         }
     }
 }

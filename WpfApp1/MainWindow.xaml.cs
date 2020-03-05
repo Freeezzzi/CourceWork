@@ -29,27 +29,13 @@ namespace WpfApp1
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            LSB lsb = new LSB();
-            using (FileStream message = new FileStream($"message.txt",FileMode.Open))
-            {
-                using (FileStream key = new FileStream($"key.txt", FileMode.Open))
-                {
-                    using (FileStream source = new FileStream($"1.wav", FileMode.Open))
-                    {
-                        using (FileStream destination = new FileStream($"2.wav", FileMode.Create))
-                        {
-                            LSB.Hide(message, key, source, destination);
-                            key.Seek(0, SeekOrigin.Begin);
-                            
-                        }
-                        using (FileStream destination = new FileStream($"2.wav", FileMode.Open))
-                        {
-                            using (FileStream message1 = new FileStream($"message1.txt", FileMode.Create))
-                                LSB.Extract(message1, key, destination);
-                        }
-                    }
-                }
-            }
+
+            output.Text = LSB.Hide("message.txt", "key.txt", "1.wav", "2.wav");
+
+            output1.Text = LSB.Extract("message1.txt","key.txt","2.wav");
+
+
+
         }
 
         private void output_Loaded(object sender, RoutedEventArgs e)
