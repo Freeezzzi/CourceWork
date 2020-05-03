@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using NAudio.Lame;
 using Yeti.Lame;
-
+// Вроде нижняя библа не нужна 
 namespace Encode
 {
     public class LSB
@@ -74,38 +74,6 @@ namespace Encode
             stream.Write(BitConverter.GetBytes((bitDepth / 8) * totalSampleCount), 0, 4);
         }
 
-        /// <summary>
-        /// Преобразует поток с wav файлом в mp3 
-        /// </summary>
-        /// <param name="wavFile"></param>
-        public static void WavToMP3(Stream wavFile)
-        {
-            using (Stream source = wavFile)
-            using (NAudio.Wave.WaveFileReader rdr = new NAudio.Wave.WaveFileReader(source))
-            {
-                WaveLib.WaveFormat fmt = new WaveLib.WaveFormat(rdr.WaveFormat.SampleRate, rdr.WaveFormat.BitsPerSample, rdr.WaveFormat.Channels);
-
-                // convert to MP3 at 96kbit/sec...
-                Yeti.Lame.BE_CONFIG conf = new Yeti.Lame.BE_CONFIG(fmt, 96);
-
-                // Allocate a 1-second buffer
-                int blen = rdr.WaveFormat.AverageBytesPerSecond;
-                byte[] buffer = new byte[blen];
-
-                // Do conversion
-                using (FileStream output = new FileStream("1.mp3", FileMode.Create))
-                {
-                    Yeti.MMedia.Mp3.Mp3Writer mp3 = new Yeti.MMedia.Mp3.Mp3Writer(output, fmt, conf);
-
-                    int readCount;
-                    while ((readCount = rdr.Read(buffer, 0, blen)) > 0)
-                        mp3.Write(buffer, 0, readCount);
-
-                    output.Flush();
-                    mp3.Close();
-                }
-            }
-        }
 
         public static int intFromBytes(byte[] bytes)
         {
@@ -131,7 +99,7 @@ namespace Encode
             return list;
         }
 
-        static public string Hide(string messagePath, string keyPath, string sourcePath, string destinationPath)
+        static public void Hide(string messagePath, string keyPath, string sourcePath, string destinationPath)
         {
             using (var sourceStream = new FileStream(sourcePath, FileMode.Open))
             using (var keyStream = new FileStream(keyPath, FileMode.Open))
@@ -152,7 +120,6 @@ namespace Encode
                 byte[] length = intToBytes(file.Length);
 
                 //вставить длину в начало
-                string str = "";
                 using (MemoryStream messageStream = new MemoryStream(Connect(length, file)))
                 {
 
@@ -183,8 +150,6 @@ namespace Encode
                             //read one sample from the wave stream
                             sourceStream.Read(waveBuffer, 0, waveBuffer.Length);
 
-                            Array.ForEach(waveBuffer, (t) => str += t+"+");
-                            str += Environment.NewLine;
 
                             waveByte = waveBuffer[format.BitsPerSample / 8 - 1];
 
@@ -203,28 +168,21 @@ namespace Encode
                             }
                             waveBuffer[format.BitsPerSample / 8 - 1] = waveByte;
 
-                            Array.ForEach(waveBuffer, (t) => str += t+"-");
-                            str += Environment.NewLine;
                             //write the result to destinationStream
                             destinationStream.Write(waveBuffer, 0, waveBuffer.Length);
                             //str += destinationStream.Position + Environment.NewLine;
                         }
-                        str += Environment.NewLine;
                     }
                     sourceStream.CopyTo(destinationStream);
                     destinationStream.Seek(0, SeekOrigin.Begin);
+
                     destinationStream.Flush();
-
-
-                    return str;
-                    // Записываем в формате mp3 на диск
-                    //WavToMP3(destinationStream);
                 }
             }
         }
 
 
-        public static string Extract(string encodemessagePath, string keyPath, string sourcePath)
+        public static void Extract(string encodemessagePath, string keyPath, string sourcePath)
         {
             using (var messageStream = new FileStream(encodemessagePath, FileMode.Create))
             using (var sourceStream = new FileStream(sourcePath, FileMode.Open))
@@ -294,7 +252,6 @@ namespace Encode
                     }
                 }
                 messageStream.Flush();
-                return str;
             }
         }
     }
