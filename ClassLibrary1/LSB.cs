@@ -23,7 +23,7 @@ namespace Encode
         /// <param name="bitDepth"></param>
         /// <param name="sampleRate"></param>
         /// <param name="totalSampleCount"></param>
-        static void WriteWavHeader(Stream stream, bool isFloatingPoint, ushort channelCount, ushort bitDepth, int sampleRate, int totalSampleCount)
+        public static void WriteWavHeader(Stream stream, bool isFloatingPoint, ushort channelCount, ushort bitDepth, int sampleRate, int totalSampleCount)
         {
             stream.Position = 0;
 
@@ -119,7 +119,6 @@ namespace Encode
 
                 byte[] length = intToBytes(file.Length);
 
-                //вставить длину в начало
                 using (MemoryStream messageStream = new MemoryStream(Connect(length, file)))
                 {
 
@@ -188,13 +187,6 @@ namespace Encode
             using (var sourceStream = new FileStream(sourcePath, FileMode.Open))
             using (var keyStream = new FileStream(keyPath, FileMode.Open))
             {
-                /*
-                using (var reader = new Mp3FileReader(sourcePath))
-                {
-                    WaveFileWriter.CreateWaveFile("converter.wav", reader);
-
-                }
-                */
                 WaveFormat format = (new WaveFileReader(sourceStream)).WaveFormat;
 
                 sourceStream.Seek(44, SeekOrigin.Begin);

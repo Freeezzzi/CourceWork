@@ -5,21 +5,63 @@ using System.Text;
 using System.Threading.Tasks;
 using NAudio.Wave;
 using System.IO;
-
+using Yeti.MMedia;
 using System;
 using System.Numerics;
+using WaveLib;
 
-namespace ClassLibrary1
+namespace PhaseCoding
 {
     public class PhaseCoding
     {
-        public static void Phase_Coding(string inputfile,string outputfile)
+        public static string Phase_Coding(string messagePath, string keyPath, string sourcePath, string destinationPath)
         {
-            // Do conversion
-            using (FileStream input = new FileStream(inputfile,FileMode.Open))
-            using (FileStream output = new FileStream(outputfile, FileMode.Create))
+            string mes = "";
+
+
+            using (var sourceStream = new FileStream(sourcePath, FileMode.Open))
+            using (var keyStream = new FileStream(keyPath, FileMode.Open))
+            using (var destinationStream = new FileStream(destinationPath, FileMode.Create))
+            using (var reader = new WaveFileReader(sourceStream))
             {
-                WavToMP3(input, output);
+                NAudio.Wave.WaveFormat format = reader.WaveFormat;
+                WaveWriter ww = new WaveWriter(destinationStream, new WaveLib.WaveFormat(format.SampleRate, format.BitsPerSample, format.Channels));
+                float[] f = new float[0];
+                byte message, bit;
+                int messageBuffer; //receives the next byte of the message or -1
+
+                byte[] file = File.ReadAllBytes(messagePath);
+
+                byte[] length = Encode.LSB.intToBytes(file.Length);
+
+                //вставить длину в начало!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                using (MemoryStream messageStream = new MemoryStream(Encode.LSB.Connect(length, file)))
+                {
+
+                    while ((messageBuffer = messageStream.ReadByte()) >= 0 && f != null)
+                    {
+                        //read one byte of the message stream
+                        message = (byte)messageBuffer;
+                        //for each bit in [message]
+                        for (int bitIndex = 0; bitIndex < 8 && (f = reader.ReadNextSampleFrame()) != null; bitIndex++)
+                        {
+                            //get the next bit from the current message byte...
+                            bit = (byte)(((message & (byte)(1 << bitIndex)) > 0) ? 1 : 0);
+                            mes += f.Length + Environment.NewLine;
+                            //float[] S = FFT.FFT.FFT1(f, (ulong)f.Length, -1);
+                            //float[] phi = new float[S.Length];
+                            //float[] A = new float[S.Length];
+                            for (int i = 0; i <8; i++)
+                            {
+                                //A[i] = Math.Abs(S[i]);
+                                //phi[i] = 
+                            }
+                            
+
+                        }
+                    }
+                }
+                return mes;
             }
         }
         /// <summary>
@@ -41,7 +83,7 @@ namespace ClassLibrary1
                 byte[] buffer = new byte[blen];
 
                 Yeti.MMedia.Mp3.Mp3Writer mp3 = new Yeti.MMedia.Mp3.Mp3Writer(Mp3file, fmt, conf);
-                
+
                 int readCount;
                 while ((readCount = rdr.Read(buffer, 0, blen)) > 0)
                     mp3.Write(buffer, 0, readCount);

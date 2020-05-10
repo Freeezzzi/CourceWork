@@ -30,10 +30,11 @@ namespace WpfApp1
         private void Button_Click(object sender, RoutedEventArgs e)
         {
 
-            output.Text = LSB.Hide("message.txt", "key.txt", "1.wav", "2.wav");
+            LSB.Hide("message.txt", "key.txt", "1.wav", "2.wav");
 
-            output1.Text = LSB.Extract("message1.txt","key.txt","2.wav");
+            LSB.Extract("message1.txt","key.txt","2.wav");
 
+            output.Text = PhaseCoding.PhaseCoding.Phase_Coding("message.txt", "key.txt", "1.wav", "2.wav").ToString();
 
 
         }
