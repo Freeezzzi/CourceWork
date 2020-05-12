@@ -12,9 +12,9 @@ using WaveLib;
 
 namespace PhaseCoding
 {
-    public class PhaseCoding
+    public static class PhaseCoding
     {
-        public static string Phase_Coding(string messagePath, string keyPath, string sourcePath, string destinationPath)
+        public static string Hide(string messagePath, string keyPath, string sourcePath, string destinationPath)
         {
             string mes = "";
 

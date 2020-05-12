@@ -11,9 +11,116 @@
             <ColumnDefinition Width="37*"/>
             <ColumnDefinition Width="755*"/>
         </Grid.ColumnDefinitions>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="529,355,0,0" VerticalAlignment="Top" Width="185" Height="54" Click="Button_Click" Grid.Column="1"/>
-        <TextBox x:Name="output" HorizontalAlignment="Right" Height="369" Margin="0,20,467,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="224" RenderTransformOrigin="0.5,9.373" Grid.Column="1" Loaded="output_Loaded"/>
-        <TextBox x:Name="output1" Grid.Column="1" HorizontalAlignment="Left" Height="369" Margin="293,20,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="224" />
+        <TabControl HorizontalAlignment="Left" Height="321" Margin="37,10,0,0" VerticalAlignment="Top" Width="709" Grid.ColumnSpan="2">
+            <TabItem x:Name="Encode" Header="Encode" RenderTransformOrigin="0.5,0.5">
+                <TabItem.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </TabItem.RenderTransform>
+                <Grid Background="#FFE5E5E5" Margin="0,0,-475.821,-314.104">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="27*"/>
+                        <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="701*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="encode_button" Content="Encode" HorizontalAlignment="Left" Margin="209.299,229,0,0" VerticalAlignment="Top" Width="185" Height="54" Click="Button_Click" Grid.Column="1" Background="WhiteSmoke" Grid.ColumnSpan="2"/>
+                    <ComboBox x:Name="encode_select" Height="29" Width="150" VerticalAlignment="Top" Margin="10,10,1019.224,0" Grid.ColumnSpan="3" SelectionChanged="ComboBox_SelectionChanged">
+                        <ComboBoxItem IsSelected="True">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock><Run Text="Select encode method"/></TextBlock>
+                            </StackPanel>
+                        </ComboBoxItem>
+                        <ComboBoxItem IsSelected="False">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock><Run Text="LSB method"/></TextBlock>
+                            </StackPanel>
+                        </ComboBoxItem>
+                        <ComboBoxItem IsSelected="False">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock><Run Text="Parity method"/></TextBlock>
+                            </StackPanel>
+                        </ComboBoxItem>
+                        <ComboBoxItem IsSelected="False">
+
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock><Run Text="Phase method"/></TextBlock>
+                            </StackPanel>
+                        </ComboBoxItem>
+                    </ComboBox>
+                    <TextBox x:Name="encode_audiofile" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="101.299,105,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="419"/>
+                    <TextBox x:Name="encode_message" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="101.299,133,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="419"/>
+                    <Button x:Name="encode_selectaudiofile" Content="..." Grid.Column="2" HorizontalAlignment="Left" Margin="539.299,105,0,0" VerticalAlignment="Top" Width="26" Click="encode_selectaudiofile_Click" RenderTransformOrigin="-0.776,0.443"/>
+                    <Button x:Name="encode_selectmessage" Content="..." Grid.Column="2" HorizontalAlignment="Left" Margin="539.299,137,0,0" VerticalAlignment="Top" Width="26" RenderTransformOrigin="8.235,0.665" Click="encode_selectmessage_Click"/>
+                    <TextBox x:Name="encode_outputdirectorytext" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="101.299,161,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="419"/>
+                    <Button x:Name="encode_outputdirectorybutton" Content="..." Grid.Column="2" HorizontalAlignment="Left" Margin="539.299,165,0,0" VerticalAlignment="Top" Width="26" Click="encode_outputdirectory_Click"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="5,105,0,0" TextWrapping="Wrap" Text="Audio Container:" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="23"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="5,133,0,0" TextWrapping="Wrap" Text="Message:" VerticalAlignment="Top" RenderTransformOrigin="-1.814,0.316" Grid.ColumnSpan="3" Width="86" Height="23"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="5,161,0,0" TextWrapping="Wrap" Text="Output directory:" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="23"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="5,189,0,0" TextWrapping="Wrap" Text="Password(optional):" VerticalAlignment="Top" Height="23" Grid.ColumnSpan="3"/>
+                    <PasswordBox x:Name="password" Grid.Column="2" HorizontalAlignment="Left" Margin="101.299,189,0,0" VerticalAlignment="Top" Width="419" Height="23
+                                 "/>
+                    <TextBlock x:Name="encode_text" Grid.Column="2" HorizontalAlignment="Left" Margin="121.299,10,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="90" Width="399"/>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="Decode" Header="Decode">
+                <Grid Background="#FFE5E5E5" Margin="0,0,-475.821,-314.104">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="41*"/>
+                        <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="1136*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="decode_button" Content="Decode" HorizontalAlignment="Left" Margin="209.299,229,0,0" VerticalAlignment="Top" Width="185" Height="54" Grid.Column="3" Background="WhiteSmoke" Click="decode_button_Click"/>
+                    <ComboBox x:Name="decode_select" Height="29" Width="150" VerticalAlignment="Top" Margin="7.239,10,1019.223,0" Grid.ColumnSpan="3" Grid.Column="1" SelectionChanged="decode_select_SelectionChanged">
+                        <ComboBoxItem IsSelected="True">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock><Run Text="Select decode method"/></TextBlock>
+                            </StackPanel>
+                        </ComboBoxItem>
+                        <ComboBoxItem IsSelected="False">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock><Run Text="LSB method"/></TextBlock>
+                            </StackPanel>
+                        </ComboBoxItem>
+                        <ComboBoxItem IsSelected="False">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock><Run Text="Parity method"/></TextBlock>
+                            </StackPanel>
+                        </ComboBoxItem>
+                        <ComboBoxItem IsSelected="False">
+
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock><Run Text="Phase method"/></TextBlock>
+                            </StackPanel>
+                        </ComboBoxItem>
+                    </ComboBox>
+                    <TextBox x:Name="decode_audiofile" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="101.299,105,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="419" Grid.ColumnSpan="2"/>
+                    <Button x:Name="decode_selectaudiofile" Content="..." Grid.Column="2" HorizontalAlignment="Left" Margin="539.299,105,0,0" VerticalAlignment="Top" Width="26" RenderTransformOrigin="-0.776,0.443" Grid.ColumnSpan="2" Click="decode_selectaudiofile_Click"/>
+                    <TextBox x:Name="decode_outputdirectorytext" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="101.299,133,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="419" Grid.ColumnSpan="2"/>
+                    <Button x:Name="decode_outputdirectorybutton" Content="..." Grid.Column="2" HorizontalAlignment="Left" Margin="539.299,133,0,0" VerticalAlignment="Top" Width="26" Grid.ColumnSpan="2" RenderTransformOrigin="0.657,-0.526" Click="decode_outputdirectorybutton_Click"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="2.239,105,0,0" TextWrapping="Wrap" Text="Audio Container:" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="23" Grid.Column="1"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="0.134,133,0,0" TextWrapping="Wrap" Text="Output directory:" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="23" Grid.Column="1"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="2.134,161,0,0" TextWrapping="Wrap" Text="Password:" VerticalAlignment="Top" Height="23" Grid.ColumnSpan="3" Grid.Column="1"/>
+                    <PasswordBox x:Name="decode_password" Grid.Column="2" HorizontalAlignment="Left" Margin="101.299,161,0,0" VerticalAlignment="Top" Width="419" Height="23
+                                 " Grid.ColumnSpan="2"/>
+                    <TextBlock x:Name="decode_text" Grid.Column="3" HorizontalAlignment="Left" Margin="121.299,10,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="90" Width="399"/>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="Convert" Header="Convert">
+                <Grid Background="#FFE5E5E5" Margin="0,0,-475.821,-314.104">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="27*"/>
+                        <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="701*"/>
+                    </Grid.ColumnDefinitions>
+
+                </Grid>
+            </TabItem>
+        </TabControl>
 
     </Grid>
 </Window>

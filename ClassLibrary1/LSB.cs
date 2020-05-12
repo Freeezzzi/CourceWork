@@ -11,7 +11,7 @@ using Yeti.Lame;
 // Вроде нижняя библа не нужна 
 namespace Encode
 {
-    public class LSB
+    public static class LSB
     {
 
         /// <summary>
@@ -99,10 +99,10 @@ namespace Encode
             return list;
         }
 
-        static public void Hide(string messagePath, string keyPath, string sourcePath, string destinationPath)
+        static public void Hide(string messagePath, string key, string sourcePath, string destinationPath)
         {
             using (var sourceStream = new FileStream(sourcePath, FileMode.Open))
-            using (var keyStream = new FileStream(keyPath, FileMode.Open))
+            using (var keyStream = new MemoryStream(Encoding.UTF8.GetBytes(key)))
             using (var destinationStream = new FileStream(destinationPath, FileMode.Create))
             using (var reader = new WaveFileReader(sourceStream))
             {
@@ -181,11 +181,11 @@ namespace Encode
         }
 
 
-        public static void Extract(string encodemessagePath, string keyPath, string sourcePath)
+        public static void Extract(string encodemessagePath, string key, string sourcePath)
         {
             using (var messageStream = new FileStream(encodemessagePath, FileMode.Create))
             using (var sourceStream = new FileStream(sourcePath, FileMode.Open))
-            using (var keyStream = new FileStream(keyPath, FileMode.Open))
+            using (var keyStream = new MemoryStream(Encoding.UTF8.GetBytes(key)))
             {
                 WaveFormat format = (new WaveFileReader(sourceStream)).WaveFormat;
 
