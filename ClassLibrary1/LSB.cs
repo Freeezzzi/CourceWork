@@ -6,8 +6,7 @@ using System.IO.Compression;
 using NAudio.Wave;
 using System.Collections.Generic;
 using System.Text;
-using NAudio.Lame;
-using Yeti.Lame;
+
 // Вроде нижняя библа не нужна 
 namespace Encode
 {

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29509.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp1", "WpfApp1.csproj", "{09538541-181C-4C61-9E9E-A7CB7F0DC026}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioCoder", "AudioCoder.csproj", "{09538541-181C-4C61-9E9E-A7CB7F0DC026}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary1", "..\ClassLibrary1\ClassLibrary1.csproj", "{1909655B-2845-474F-9599-AA7DCB3AA734}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeLib", "..\ClassLibrary1\CodeLib.csproj", "{1909655B-2845-474F-9599-AA7DCB3AA734}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "yeti.mp3", "..\yeti.mp3\yeti.mp3.csproj", "{B564FD33-FA50-46B2-B669-2D83DE3AF5E4}"
 EndProject
