@@ -109,9 +109,20 @@ namespace WpfApp1
                     ParityMethod.Hide(encode_message.Text, encode_audiofile.Text, encode_outputdirectorytext.Text);
                     break;
                 case 3:
-                    //encode_output.Text = PhaseCoding.PhaseCoding.Hide("C:\\Users\\sasha\\Desktop\\github\\CourceWork\\WpfApp1\\bin\\Debug\\message.txt", password.Password,
-                        //"C:\\Users\\sasha\\Desktop\\github\\CourceWork\\WpfApp1\\bin\\Debug\\1.wav", "C:\\Users\\sasha\\Desktop\\github\\CourceWork\\WpfApp1\\bin\\Debug\\encoded_file.wav");
+                    if (!Encode_CheckValidate())
+                    {
+                        MessageBox.Show("Введены неверные данные\nИсправьте выделенные пути файлов");
+                        break;
+                    }
                     encode_output.Text = PhaseCoding.PhaseCoding.Hide(encode_message.Text, password.Password, encode_audiofile.Text, encode_outputdirectorytext.Text);
+                    break;
+                case 4:
+                    if (!Encode_CheckValidate())
+                    {
+                        MessageBox.Show("Введены неверные данные\nИсправьте выделенные пути файлов");
+                        break;
+                    }
+                    LSB.Hide(encode_message.Text, password.Password, encode_audiofile.Text, encode_outputdirectorytext.Text);
                     break;
             }
 
@@ -146,10 +157,14 @@ namespace WpfApp1
                         "Обратите внимание,что данный метод неустойчив к различным видам атак, в частности при переводе в формат со сжатыми данными сообщение может быть утеряно. Вы так же можете использовать пароль,если это требуется.";
                     break;
                 case 2:
-                    encode_text.Text = "Метод четного кодирования";
+                    encode_text.Text = "Метод четного кодирования схож с методом LSB, но обладает более высокой надежностью.\n" +
+                        "Обратите внимание,что данный метод неустойчив к различным видам атак, в частности при переводе в формат со сжатыми данными сообщение может быть утеряно. Вы так же можете использовать пароль,если это требуется.";
                     break;
                 case 3:
-                    encode_text.Text = "Метод фазвого кодирования";
+                    encode_text.Text = "Метод фазового кодирования работает путем замены фазы исходного звукового сегмента на опорную фазу, которая представляет собой сообщение";
+                    break;
+                case 4:
+                    encode_text.Text = "Метод расширенного спектра(в данном случае используется DSSS тип).";
                     break;
             }
         }
@@ -161,7 +176,16 @@ namespace WpfApp1
                 audiofile = selectedFileName;
                 encode_audiofile.Text = audiofile;
             }
-            encode_preview.Text = $"Объем выбранного файла 235 кб\nМаксимальный допустимый обьем сообщения 30202 байта";
+            try
+            {
+                FileInfo fi = new FileInfo(audiofile);
+                encode_preview.Text = $"Объем выбранного файла {fi.Length} байт\nМаксимальный допустимый обьем сообщения без паролья {fi.Length-44} байт";
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show($"Не удается получить доступ к файлу\n{ex.Message}");
+            }
             
         }
 
@@ -214,10 +238,14 @@ namespace WpfApp1
                         "Обратите внимание,что данный метод неустойчив к различным видам атак, в частности при переводе в формат со сжатыми данными сообщение может быть утеряно. Вы так же можете использовать пароль,если это требуется.";
                     break;
                 case 2:
-                    decode_text.Text = "Метод четного кодирования";
+                    decode_text.Text = "Метод четного кодирования схож с методом LSB, но обладает более высокой надежностью.\n" +
+                        "Обратите внимание,что данный метод неустойчив к различным видам атак, в частности при переводе в формат со сжатыми данными сообщение может быть утеряно. Вы так же можете использовать пароль,если это требуется.";
                     break;
                 case 3:
-                    decode_text.Text = "Метод фазвого кодирования";
+                    decode_text.Text = "Метод фазового кодирования работает путем замены фазы исходного звукового сегмента на опорную фазу, которая представляет собой сообщение";
+                    break;
+                case 4:
+                    decode_text.Text = "Метод расширенного спектра(в данном случае используется DSSS тип).";
                     break;
             }
         }
@@ -267,7 +295,7 @@ namespace WpfApp1
                         break;
                     }
                     LSB.Extract(decode_outputdirectorytext.Text, decode_password.Password, decode_audiofile.Text);
-                    decode_preview.Text = "Hello world!";
+                    
                     break;
                 case 2:
                     if (!Decode_CheckValidate())
@@ -276,10 +304,9 @@ namespace WpfApp1
                         break;
                     }
                     ParityMethod.Extract(decode_outputdirectorytext.Text, decode_audiofile.Text);
+                   
                     break;
                 case 3:
-                    //decode_output.Text = PhaseCoding.PhaseCoding.Extract("C:\\Users\\sasha\\Desktop\\github\\CourceWork\\WpfApp1\\bin\\Debug\\encoded_file.wav",
-                        //decode_password.Password, "C:\\Users\\sasha\\Desktop\\github\\CourceWork\\WpfApp1\\bin\\Debug\\decoded_message.txt");
                     decode_output.Text = PhaseCoding.PhaseCoding.Extract(decode_outputdirectorytext.Text, decode_password.Password, decode_audiofile.Text);
                     break;
             }
@@ -313,6 +340,99 @@ namespace WpfApp1
                 audiofile = selectedFileName;
                 decode_audiofile.Text = audiofile;
             }
+        }
+
+        private void convert_button_Click(object sender, RoutedEventArgs e)
+        {
+            if (from.SelectedIndex == 0 && to.SelectedIndex == 1)
+            {
+                if (!Convert_CheckValidate())
+                {
+                    MessageBox.Show("Введены неверные данные\nИсправьте выделенные пути файлов");
+                    
+                }
+                try
+                {
+                    PhaseCoding.Convert.WavToMP3(convert_audiofile.Text, convert_outputdirectorytext.Text);
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message);
+                }
+                return;
+            }
+            if (from.SelectedIndex == 1 && to.SelectedIndex == 0)
+            {
+                if (!Convert_CheckValidate())
+                {
+                    MessageBox.Show("Введены неверные данные\nИсправьте выделенные пути файлов");
+
+                }
+                try
+                {
+                    PhaseCoding.Convert.Mp3ToWav(convert_audiofile.Text, convert_outputdirectorytext.Text);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                return;
+            }
+
+        }
+
+        private void convert_selectaudiofile_Click(object sender, RoutedEventArgs e)
+        {
+            if (ChooseFile("audio file (*.wav; *.mp3)|;*.wav; *.mp3"))
+            {
+                audiofile = selectedFileName;
+                convert_audiofile.Text = audiofile;
+            }
+        }
+
+        private void convert_outputdirectorybutton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+
+            dialog.InitialDirectory = currentdirectory;
+            dialog.ValidateNames = false;
+            dialog.CheckFileExists = false;
+            dialog.CheckPathExists = true;
+            string str = ".wav";
+            switch (to.SelectedIndex)
+            {
+
+                case 1:
+                    str = ".mp3";
+                    break;
+            }
+
+            // Always default to Folder Selection.
+            dialog.FileName = "converted_" + "audio" + str;
+
+            if (dialog.ShowDialog() == true)
+            {
+                outputdirectory = dialog.FileName;
+                convert_outputdirectorytext.Text = outputdirectory;
+                currentdirectory = dialog.FileName;
+            }
+        }
+
+        bool Convert_CheckValidate()
+        {
+            bool check = true;
+            if (!File.Exists(convert_audiofile.Text))
+            {
+                convert_audiofile.Background = new SolidColorBrush(Color.FromArgb(100, 0xE5, 0xBA, 0xBA));
+                check = false;
+            }
+            if (convert_outputdirectorytext.Text == "" || !Directory.Exists(System.IO.Path.GetDirectoryName(convert_outputdirectorytext.Text)))
+            {
+                convert_outputdirectorytext.Background = new SolidColorBrush(Color.FromArgb(100, 0xE5, 0xBA, 0xBA));
+                check = false;
+            }
+            return check;
         }
     }
 }

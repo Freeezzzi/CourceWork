@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using NAudio.Wave;
 using System.IO;
-using Yeti.MMedia;
 using System.Numerics;
-using WaveLib;
-using System.Windows.Forms;
 
 namespace PhaseCoding
 {
-    public static class PhaseCoding
+    public static class SpreadSpetrum
     {
         public static string Hide(string messagePath, string key, string sourcePath, string destinationPath)
         {
@@ -83,10 +77,10 @@ namespace PhaseCoding
                             phi[2] = -phidata;
 
                             //6 
-                            
-                            for (int i = 1; i < phi.Length-1; i++)
+
+                            for (int i = 1; i < phi.Length - 1; i++)
                             {
-                                phi[i] = phi[i - 1] + deltaphi[i]; 
+                                phi[i] = phi[i - 1] + deltaphi[i];
                             }
                             //mes += phi[1] + Environment.NewLine;
 
@@ -104,7 +98,7 @@ namespace PhaseCoding
                             }
                             mes += reconstructed[0] + " " + reconstructed[1] + " " + reconstructed[2] + " " + reconstructed[3] + " " + destinationStream.Position + Environment.NewLine;
                             destinationStream.Write(reconstructed, 0, 4);
-                            
+
                         }
                     }
                     reader.CopyTo(destinationStream);
@@ -144,7 +138,7 @@ namespace PhaseCoding
                     //for each bit in [message]
                     for (int bitIndex = 0; bitIndex < 8 && (reader.Read(data, 0, data.Length) != -1); bitIndex++)
                     {
-                        mes += data[0]+" " + data[1]+" " + data[2]+" " + data[3] +" "+reader.Position+ Environment.NewLine;
+                        mes += data[0] + " " + data[1] + " " + data[2] + " " + data[3] + " " + reader.Position + Environment.NewLine;
                         Complex[] complexData = new Complex[data.Length];
                         for (int i = 0; i < complexData.Length; i++)
                         {
@@ -192,7 +186,6 @@ namespace PhaseCoding
             }
             return mes;
         }
-
     }
 }
 

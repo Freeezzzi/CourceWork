@@ -65,7 +65,7 @@
                     <PasswordBox x:Name="password" Grid.Column="2" HorizontalAlignment="Left" Margin="101.299,189,0,0" VerticalAlignment="Top" Width="419" Height="23
                                  "/>
                     <TextBlock x:Name="encode_text" Grid.Column="2" HorizontalAlignment="Left" Margin="121.299,10,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="90" Width="399" FontSize="11"/>
-                    <TextBlock x:Name="encode_preview" HorizontalAlignment="Left" Margin="21,229,0,0" TextWrapping="Wrap" Text="Здесь вы сможете увидеть максимальный допустимый обьем для кодируемого сообщения" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="93" Width="162" FontSize="11"/>
+                    <TextBlock x:Name="encode_preview" HorizontalAlignment="Left" Margin="21,229,0,0" TextWrapping="Wrap" Text="Здесь вы сможете увидеть максимальный допустимый обьем для кодируемого сообщения" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="93" Width="218" FontSize="11"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="Decode" Header="Decode">
@@ -135,14 +135,14 @@
                         <ComboBoxItem Content="mp3" HorizontalAlignment="Left" Width="60" Margin="0,0,-1.254,0"/>
                     </ComboBox>
                     <TextBox x:Name="convert_audiofile" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="103.299,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="377"/>
-                    <Button x:Name="convert_selectaudiofile" Content="..." Grid.Column="2" HorizontalAlignment="Left" Margin="485.299,117,0,0" VerticalAlignment="Top" Width="26" RenderTransformOrigin="-0.776,0.443" Height="23" />
+                    <Button x:Name="convert_selectaudiofile" Content="..." Grid.Column="2" HorizontalAlignment="Left" Margin="485.299,117,0,0" VerticalAlignment="Top" Width="26" RenderTransformOrigin="-0.776,0.443" Height="23" Click="convert_selectaudiofile_Click" />
                     <TextBox x:Name="convert_outputdirectorytext" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="103.299,145,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="377"/>
-                    <Button x:Name="convert_outputdirectorybutton" Content="..." Grid.Column="2" HorizontalAlignment="Left" Margin="485.299,145,0,0" VerticalAlignment="Top" Width="26" RenderTransformOrigin="0.657,-0.526" Height="23" />
+                    <Button x:Name="convert_outputdirectorybutton" Content="..." Grid.Column="2" HorizontalAlignment="Left" Margin="485.299,145,0,0" VerticalAlignment="Top" Width="26" RenderTransformOrigin="0.657,-0.526" Height="23" Click="convert_outputdirectorybutton_Click" />
                     <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="126.299,83,0,0" TextWrapping="Wrap" Text="to" VerticalAlignment="Top" RenderTransformOrigin="0.514,-0.051"/>
                     <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="10.299,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="51" Width="641" FontSize="13"><Run Text="Here you can convert your audio file to the format you need."/><LineBreak/><Run Text="Attention! Not all encoding methods are convertible resistant, which may result in the loss of the encoded message."/></TextBlock>
                     <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="0.299,117,0,0" TextWrapping="Wrap" Text="Audio file:" VerticalAlignment="Top" Height="23" Width="56"/>
                     <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="0.299,145,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="23" Width="98"><Run Text="Output directory:"/><LineBreak/><Run/></TextBlock>
-                    <Button x:Name="convert_button" Content="Convert" HorizontalAlignment="Left" Margin="209.299,229,0,0" VerticalAlignment="Top" Width="185" Height="54" Grid.Column="3" Background="WhiteSmoke" Grid.ColumnSpan="2"/>
+                    <Button x:Name="convert_button" Content="Convert" HorizontalAlignment="Left" Margin="209.299,229,0,0" VerticalAlignment="Top" Width="185" Height="54" Grid.Column="3" Background="WhiteSmoke" Grid.ColumnSpan="2" Click="convert_button_Click"/>
                 </Grid>
             </TabItem>
         </TabControl>
